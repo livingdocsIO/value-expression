@@ -1,6 +1,6 @@
 {
   "name": "value-expression",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Evaluate javaScript-like code snippets to produce a single value.",
   "main": "src/index.js",
   "scripts": {
