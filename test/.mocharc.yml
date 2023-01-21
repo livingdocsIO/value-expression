@@ -1,0 +1,6 @@
+reporter: dot
+require: test//support//test-globals.js
+timeout: 5000
+reporter-option: # array, not object
+  - 'maxDiffSize=20000'
+

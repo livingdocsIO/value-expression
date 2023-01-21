@@ -1,0 +1,17 @@
+{
+  "name": "value-expression",
+  "version": "1.0.0",
+  "description": "Evaluate javaScript-like code snippets to produce a single value.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha '{,!(node_modules)/**}/*.test.js' --config 'test/.mocharc.yml'",
+    "test:watch": "npm run test -- --watch"
+  },
+  "author": "Lukas Peyer <lukas@livingdocs.io> (https://livingdocs.io/)",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "eslint": "^8.29.0",
+    "mocha": "^10.1.0"
+  }
+}
