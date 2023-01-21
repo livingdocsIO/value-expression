@@ -109,4 +109,39 @@ describe('tokenize:', function () {
     check(`{{true}} {{ false }}`,
       ['{{', 'true', '}}', ' ', '{{', ' ', 'false', ' ', '}}'])
   })
+
+  it('tokenizes an && operator', function () {
+    check(`{{false&&bar()}}`,
+      ['{{', 'false', '&&', 'bar', '(', ')', '}}'])
+  })
+
+  it('tokenizes an || operator', function () {
+    check(`{{foo||bar}}`,
+      ['{{', 'foo', '||', 'bar', '}}'])
+  })
+
+  it('tokenizes an === operator', function () {
+    check(`foo===bar`,
+      ['foo', '===', 'bar'])
+  })
+
+  it('tokenizes an !== operator', function () {
+    check(`foo!==bar`,
+      ['foo', '!==', 'bar'])
+  })
+
+  it('tokenizes an > operator', function () {
+    check(`foo>bar`,
+      ['foo', '>', 'bar'])
+  })
+
+  it('tokenizes an >= operator', function () {
+    check(`foo>=bar`,
+      ['foo', '>=', 'bar'])
+  })
+
+  it('tokenizes truthy as a word', function () {
+    check(`truthy===true`,
+      ['truthy', '===', 'true'])
+  })
 })

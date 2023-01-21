@@ -18,19 +18,28 @@ module.exports = function evaluate (syntaxTree, context = {}, methods = {}) {
 // the syntax tree.
 function nodeEvaluator (context, methods) {
   return function getValue (node) {
-    if (node.type === 'concat') return concat(node, getValue)
+    if (node.type === 'string') return node.value
+    if (node.type === 'number') return node.value
+    if (node.type === 'boolean') return node.value
     if (node.type === 'expression') return expression(node, getValue)
     if (node.type === 'function') return func(node, getValue, methods)
-    if (node.type === 'pipe') return pipe(node, getValue)
     if (node.type === 'variable') return variable(node, context)
+    if (node.type === 'pipe') return pipe(node, getValue, methods)
+    if (node.type === 'concat') return concat(node, getValue)
     if (node.type === 'addition') return addition(node, getValue)
     if (node.type === 'subtraction') return subtraction(node, getValue)
     if (node.type === 'multiplication') return multiplication(node, getValue)
     if (node.type === 'division') return division(node, getValue)
     if (node.type === 'modulo') return modulo(node, getValue)
-    if (node.type === 'string') return node.value
-    if (node.type === 'number') return node.value
-    if (node.type === 'boolean') return node.value
+    if (node.type === 'greaterThan') return greaterThan(node, getValue)
+    if (node.type === 'greaterThanOrEqual') return greaterThanOrEqual(node, getValue)
+    if (node.type === 'lessThan') return lessThan(node, getValue)
+    if (node.type === 'lessThanOrEqual') return lessThanOrEqual(node, getValue)
+    if (node.type === 'strictEqual') return strictEqual(node, getValue)
+    if (node.type === 'strictNotEqual') return strictNotEqual(node, getValue)
+    if (node.type === 'and') return and(node, getValue)
+    if (node.type === 'or') return or(node, getValue)
+
     throw new Error(`Unknown syntax tree node: ${node.type}`)
   }
 }
@@ -102,3 +111,53 @@ function modulo (node, getValue) {
   const right = getValue(node.right)
   return left % right
 }
+
+function greaterThan (node, getValue) {
+  const left = getValue(node.left)
+  const right = getValue(node.right)
+  return left > right
+}
+
+function greaterThanOrEqual (node, getValue) {
+  const left = getValue(node.left)
+  const right = getValue(node.right)
+  return left >= right
+}
+
+function lessThan (node, getValue) {
+  const left = getValue(node.left)
+  const right = getValue(node.right)
+  return left < right
+}
+
+function lessThanOrEqual (node, getValue) {
+  const left = getValue(node.left)
+  const right = getValue(node.right)
+  return left <= right
+}
+
+function strictEqual (node, getValue) {
+  const left = getValue(node.left)
+  const right = getValue(node.right)
+  return left === right
+}
+
+function strictNotEqual (node, getValue) {
+  const left = getValue(node.left)
+  const right = getValue(node.right)
+  return left !== right
+}
+
+function and (node, getValue) {
+  const left = getValue(node.left)
+  const right = getValue(node.right)
+  return left && right
+}
+
+function or (node, getValue) {
+  const left = getValue(node.left)
+  const right = getValue(node.right)
+  return left || right
+}
+
+

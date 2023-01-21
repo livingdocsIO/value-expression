@@ -1,7 +1,7 @@
 'use strict'
 
 // any whitespace or {{ or }} or content in "" or ''
-const specialCharacterSplit = /(\{\{|\}\}|&&|\|\||[-+*/%(),]|"[^"]*"|'[^']*'|\s+)/
+const specialCharacterSplit = /(\{\{|\}\}|&&|\|\||===|!==|>=|<=|[-+*/%()<>|,]|"[^"]*"|'[^']*'|\s+)/
 
 module.exports = function tokenize (expression) {
   // First, we can use a regular expression to split the expression

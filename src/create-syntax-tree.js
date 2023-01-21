@@ -285,6 +285,14 @@ function getOperatorType (operatorToken) {
   if (operatorToken === '*') return 'multiplication'
   if (operatorToken === '/') return 'division'
   if (operatorToken === '%') return 'modulo'
+  if (operatorToken === '>') return 'greaterThan'
+  if (operatorToken === '>=') return 'greaterThanOrEqual'
+  if (operatorToken === '<') return 'lessThan'
+  if (operatorToken === '<=') return 'lessThanOrEqual'
+  if (operatorToken === '===') return 'strictEqual'
+  if (operatorToken === '!==') return 'strictNotEqual'
+  if (operatorToken === '&&') return 'and'
+  if (operatorToken === '||') return 'or'
 }
 
 // Precedence of all binary operators
@@ -292,11 +300,20 @@ function getOperatorType (operatorToken) {
 // JavaScript operator precedence:
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
 const precedence = {
-  addition: 11,
-  subtraction: 11,
   multiplication: 12,
   division: 12,
-  modulo: 12
+  modulo: 12,
+  addition: 11,
+  subtraction: 11,
+  greaterThan: 9,
+  greaterThanOrEqual: 9,
+  lessThan: 9,
+  lessThanOrEqual: 9,
+  strictEqual: 8,
+  strictNotEqual: 8,
+  and: 4,
+  or: 3,
+  pipe: 1
 }
 function hasPrecedence (type, leftType) {
   return !!precedence[leftType] && precedence[type] > precedence[leftType]

@@ -9,41 +9,93 @@ function parse (str, context, methods) {
   return {tree: syntaxTree, result: evaluate(syntaxTree, context, methods)}
 }
 
+function assert (str, result) {
+  expect(parse(str).result).to.equal(result, str)
+}
+
 describe('expressions:', function () {
 
   describe('results', function () {
 
     it('handles precedence of a complicated calculation', function () {
-      const {result} = parse(`1 + 2 * 3 + 10 / 2`)
-      expect(result).to.equal(1 + 2 * 3 + 10 / 2) // eslint-disable-line no-mixed-operators
+      assert(`1 + 2 * 3 + 10 / 2`,
+        1 + 2 * 3 + 10 / 2) // eslint-disable-line no-mixed-operators
     })
 
-    it('handles precedence with all operators', function () {
-      const {result} = parse(`1 - 2 + 3 * 4 / 5 % 6`)
-      expect(result).to.equal(1 - 2 + 3 * 4 / 5 % 6) // eslint-disable-line no-mixed-operators
+    it('handles precedence with all math operators', function () {
+      assert(`1 - 2 + 3 * 4 / 5 % 6`,
+        1 - 2 + 3 * 4 / 5 % 6) // eslint-disable-line no-mixed-operators
     })
 
-    it('handles precedence with all operators (reverse)', function () {
-      const {result} = parse(`1 % 2 / 3 * 4 + 5 - 6`)
-      expect(result).to.equal(1 % 2 / 3 * 4 + 5 - 6) // eslint-disable-line no-mixed-operators
+    it('handles precedence with all math operators (reverse)', function () {
+      assert(`1 % 2 / 3 * 4 + 5 - 6`,
+        1 % 2 / 3 * 4 + 5 - 6) // eslint-disable-line no-mixed-operators
     })
 
     it('handles multiline expressions', function () {
-      const {result} = parse(`1
+      assert(`1
         + 2
         * 3
-      `)
-      expect(result).to.equal(1 + 2 * 3) // eslint-disable-line no-mixed-operators
+      `, 1 + 2 * 3) // eslint-disable-line no-mixed-operators
     })
 
     it('handles true logic', function () {
-      const {result} = parse(`true + true`)
-      expect(result).to.equal(true + true) // -> results in 2 in case you're wondering
+      // -> results in 2 in case you're wondering
+      assert(`true + true`, true + true)
     })
 
     it('handles false logic', function () {
-      const {result} = parse(`false + false`)
-      expect(result).to.equal(false + false) // -> results in 0
+      // -> results in 0 in case you're wondering
+      assert(`false + false`, false + false)
+    })
+
+    it('handles strict equal', function () {
+      assert(`2 === 1`, false)
+      assert(`true === true`, true)
+      assert(`true === 'true'`, false)
+    })
+
+    it('handles strict not equal', function () {
+      assert(`2 !== 1`, true)
+      assert(`true !== true`, false)
+      assert(`true !== 'true'`, true)
+    })
+
+    it('handles greaterThan', function () {
+      assert(`2 > 1`, true)
+      assert(`2 > 2`, false)
+      assert(`2 > 3`, false)
+    })
+
+    it('handles greaterOrEqualThan', function () {
+      assert(`2 >= 1`, true)
+      assert(`2 >= 2`, true)
+      assert(`2 >= 3`, false)
+    })
+
+    it('handles lesserThan', function () {
+      assert(`2 < 1`, false)
+      assert(`2 < 2`, false)
+      assert(`2 < 3`, true)
+    })
+
+    it('handles lesserOrEqualThan', function () {
+      assert(`2 <= 1`, false)
+      assert(`2 <= 2`, true)
+      assert(`2 <= 3`, true)
+    })
+
+    it('handles &&', function () {
+      assert(`true && false`, false)
+      assert(`true && true`, true)
+      assert(`0 && true`, 0)
+      assert(`true && 'foo'`, 'foo')
+    })
+
+    it('handles ||', function () {
+      assert(`true || false`, true)
+      assert(`false || false`, false)
+      assert(`0 || 'hey'`, 'hey')
     })
   })
 
@@ -271,7 +323,6 @@ describe('expressions:', function () {
         }
       })
       expect(result).to.equal(7 % 2)
-
     })
 
     it('parses a variable name with all characters', function () {
