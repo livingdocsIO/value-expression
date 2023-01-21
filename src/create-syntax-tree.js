@@ -138,6 +138,9 @@ function parseExpression (state) {
   } else if (isString.test(token)) {
     setStatement({type: 'string', value: token.slice(1, -1)})
     parseNextToken(state)
+  } else if (isBoolean(token)) {
+    setStatement({type: 'boolean', value: token === 'true'})
+    parseNextToken(state)
   } else if (isFunctionStart(state.peekToken()) && isVariable(token)) {
     state.consumeToken() // consume the opening parens
     const expression = {
@@ -180,6 +183,8 @@ function parseBinaryOperand (state, operatorToken) {
     rightOperand = {type: 'number', value: Number(rightToken)}
   } else if (isString.test(rightToken)) {
     rightOperand = {type: 'string', value: rightToken.slice(1, -1)}
+  } else if (isBoolean(rightToken)) {
+    rightOperand = {type: 'boolean', value: rightToken === 'true'}
   } else if (isFunctionStart(state.peekToken()) && isVariable(rightToken)) {
     state.consumeToken() // consume the opening parens
     rightOperand = {
@@ -268,6 +273,10 @@ function isBinaryOperator (token) {
 
 function isComma (token) {
   return token === ','
+}
+
+function isBoolean (token) {
+  return token === 'true' || token === 'false'
 }
 
 function getOperatorType (operatorToken) {

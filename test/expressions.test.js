@@ -35,6 +35,16 @@ describe('expressions:', function () {
       `)
       expect(result).to.equal(1 + 2 * 3) // eslint-disable-line no-mixed-operators
     })
+
+    it('handles true logic', function () {
+      const {result} = parse(`true + true`)
+      expect(result).to.equal(true + true) // -> results in 2 in case you're wondering
+    })
+
+    it('handles false logic', function () {
+      const {result} = parse(`false + false`)
+      expect(result).to.equal(false + false) // -> results in 0
+    })
   })
 
   describe('syntax-tree', function () {
@@ -128,6 +138,30 @@ describe('expressions:', function () {
         }
       })
       expect(result).to.equal(`👹🦄`)
+    })
+
+    it('parses boolean true', function () {
+      const {tree, result} = parse(`true`)
+      expect(tree).to.deep.equal({
+        type: 'expression',
+        statement: {
+          type: 'boolean',
+          value: true
+        }
+      })
+      expect(result).to.equal(true)
+    })
+
+    it('parses boolean false', function () {
+      const {tree, result} = parse(`false`)
+      expect(tree).to.deep.equal({
+        type: 'expression',
+        statement: {
+          type: 'boolean',
+          value: false
+        }
+      })
+      expect(result).to.equal(false)
     })
 
     it('adds two numbers', function () {

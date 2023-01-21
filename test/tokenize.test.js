@@ -104,4 +104,9 @@ describe('tokenize:', function () {
     check(`{{''''}}`,
       ['{{', `''`, `''`, '}}'])
   })
+
+  it('tokenizes true and false', function () {
+    check(`{{true}} {{ false }}`,
+      ['{{', 'true', '}}', ' ', '{{', ' ', 'false', ' ', '}}'])
+  })
 })
