@@ -293,6 +293,7 @@ function getOperatorType (operatorToken) {
   if (operatorToken === '!==') return 'strictNotEqual'
   if (operatorToken === '&&') return 'and'
   if (operatorToken === '||') return 'or'
+  if (operatorToken === '|') return 'pipe'
 }
 
 // Precedence of all binary operators

@@ -9,7 +9,36 @@ function parse (str, context, methods) {
   return {tree: syntaxTree, result: evaluate(syntaxTree, context, methods)}
 }
 
+function assert (str, context, methods, result) {
+  expect(parse(str, context, methods).result).to.equal(result, str)
+}
+
 describe('functions:', function () {
+
+  describe('results', function () {
+
+    it('pipes a method', function () {
+      assert(`true && foo() | pipe`, {}, {
+        foo: () => 'fooCalled',
+        pipe: (param) => `pipe() -> ${param}`
+      }, 'pipe() -> fooCalled')
+    })
+
+    it('pipes through multiple methods', function () {
+      assert(`0 | inc | inc | inc`, {}, {
+        inc: (num) => num + 1
+      }, 3)
+    })
+
+    it('pipes through multiple methods with params', function () {
+      assert(`0 | inc | inc | decorate(noun)`, {
+        noun: 'houses'
+      }, {
+        inc: (num) => num + 1,
+        decorate: (num, noun) => `decorate() -> ${num} ${noun}`
+      }, 'decorate() -> 2 houses')
+    })
+  })
 
   describe('syntax-tree', function () {
 
@@ -119,6 +148,77 @@ describe('functions:', function () {
         }
       })
       expect(result).to.equal('foo()bar()foo')
+    })
+
+    it('pipes a value into a function', function () {
+      const {tree, result} = parse(`"hey" | foo`, {}, {
+        foo: (str) => `foo() -> ${str}`
+      })
+      expect(tree).to.deep.equal({
+        type: 'expression',
+        statement: {
+          type: 'pipe',
+          left: {
+            type: 'string',
+            value: 'hey'
+          },
+          right: {
+            type: 'variable',
+            name: 'foo'
+          }
+        }
+      })
+      expect(result).to.equal('foo() -> hey')
+    })
+
+    it('pipes a value into a function with empty params', function () {
+      const {tree, result} = parse(`"hey" | foo()`, {}, {
+        foo: (str) => `foo() -> ${str}`
+      })
+      expect(tree).to.deep.equal({
+        type: 'expression',
+        statement: {
+          type: 'pipe',
+          left: {
+            type: 'string',
+            value: 'hey'
+          },
+          right: {
+            type: 'function',
+            name: 'foo',
+            args: []
+          }
+        }
+      })
+      expect(result).to.equal('foo() -> hey')
+    })
+
+    it('pipes a value into a function with params', function () {
+      const {tree, result} = parse(`"hey" | foo('you', 'there')`, {}, {
+        foo: (str, str2, str3) => `foo() -> ${str} ${str2} ${str3}`
+      })
+      expect(tree).to.deep.equal({
+        type: 'expression',
+        statement: {
+          type: 'pipe',
+          left: {
+            type: 'string',
+            value: 'hey'
+          },
+          right: {
+            type: 'function',
+            name: 'foo',
+            args: [{
+              type: 'string',
+              value: 'you'
+            }, {
+              type: 'string',
+              value: 'there'
+            }]
+          }
+        }
+      })
+      expect(result).to.equal('foo() -> hey you there')
     })
   })
 

@@ -76,10 +76,18 @@ function func (node, getValue, methods) {
 
 function pipe (node, getValue, methods) {
   const left = getValue(node.left)
-  const method = methods[node.name]
-  if (!method) throw new Error(`Unknown method: ${node.name}`)
+  const right = node.right
 
-  return method(left, ...node.args.map(getValue))
+  if (!(right.type === 'variable' || right.type === 'function')) {
+    throw new Error(`Invalid pipe right hand side: ${right.type}`)
+  }
+
+  const method = methods[right.name]
+  if (!method) throw new Error(`Unknown method: ${right.name}`)
+
+  return right.args?.length
+    ? method(left, ...right.args.map(getValue))
+    : method(left)
 }
 
 function addition (node, getValue) {

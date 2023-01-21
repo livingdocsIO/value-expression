@@ -110,6 +110,11 @@ describe('tokenize:', function () {
       ['{{', 'true', '}}', ' ', '{{', ' ', 'false', ' ', '}}'])
   })
 
+  it('tokenizes a pipe operator', function () {
+    check(`{{"foo"|bar}}`,
+      ['{{', `"foo"`, '|', 'bar', '}}'])
+  })
+
   it('tokenizes an && operator', function () {
     check(`{{false&&bar()}}`,
       ['{{', 'false', '&&', 'bar', '(', ')', '}}'])
