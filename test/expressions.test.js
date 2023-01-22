@@ -13,6 +13,10 @@ function assert (str, result) {
   expect(parse(str).result).to.equal(result, str)
 }
 
+function assertContext (str, context, result) {
+  expect(parse(str, context).result).to.equal(result, str)
+}
+
 describe('expressions:', function () {
 
   describe('results', function () {
@@ -97,6 +101,14 @@ describe('expressions:', function () {
       assert(`false || false`, false)
       assert(`0 || 'hey'`, 'hey')
     })
+
+    it('works with different variable names', function () {
+      assertContext(`_foo`, {_foo: true}, true)
+      assertContext(`$foo`, {$foo: true}, true)
+      assertContext(`T9`, {T9: true}, true)
+      assertContext(`bar`, {}, undefined)
+    })
+
   })
 
   describe('syntax-tree', function () {

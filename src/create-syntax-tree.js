@@ -2,7 +2,7 @@
 const isWhitespace = /^\s/
 const isString = /^["'].*["']$/s // /s modifier (dotall) to match newlines with dot
 const isNumber = /^-?\d+(\.\d+)?$/
-const variableRegex = /^[a-zA-Z][a-zA-Z0-9_.]*$/
+const variableRegex = /^[a-zA-Z_$][a-zA-Z0-9_$.]*$/
 
 module.exports = function createSyntaxTree (tokens, type = 'expression') {
   const state = {
