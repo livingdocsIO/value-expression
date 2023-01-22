@@ -1,14 +1,7 @@
 'use strict'
 
-module.exports = function evaluate (syntaxTree, context = {}, methods = {}) {
-  if (!syntaxTree) return
-
-  const safeContext = Object.create(null)
-  for (const key in context) {
-    safeContext[key] = context[key]
-  }
-
-  return nodeEvaluator(safeContext, methods)(syntaxTree)
+module.exports = function evaluate (syntaxTree, context, methods) {
+  return nodeEvaluator(context, methods)(syntaxTree)
 }
 
 // Bind a getValue function to the context and methods.
@@ -61,14 +54,14 @@ function variable (node, context) {
   const parts = node.name.split('.')
   let value = context
   for (const propertyName of parts) {
-    if (value == null) return
+    if (!value?.hasOwnProperty(propertyName)) return
     value = value[propertyName]
   }
   return value
 }
 
 function func (node, getValue, methods) {
-  const method = methods[node.name]
+  const method = methods?.hasOwnProperty(node.name) && methods[node.name]
   if (!method) throw new Error(`Unknown method: ${node.name}`)
 
   return method(...node.args.map(getValue))
@@ -82,7 +75,7 @@ function pipe (node, getValue, methods) {
     throw new Error(`Invalid pipe right hand side: ${right.type}`)
   }
 
-  const method = methods[right.name]
+  const method = methods?.hasOwnProperty(right.name) && methods[right.name]
   if (!method) throw new Error(`Unknown method: ${right.name}`)
 
   return right.args?.length

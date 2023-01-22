@@ -109,6 +109,10 @@ describe('expressions:', function () {
       assertContext(`bar`, {}, undefined)
     })
 
+    it('does not return properties from Object.prototype', function () {
+      assertContext(`__proto__`, {}, undefined)
+      assertContext(`toString`, {}, undefined)
+    })
   })
 
   describe('syntax-tree', function () {

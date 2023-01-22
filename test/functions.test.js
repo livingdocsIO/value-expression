@@ -227,5 +227,30 @@ describe('functions:', function () {
     it('throws for missing closing parens', function () {
       expect(() => parse(`f(`)).to.throw('Unexpected end of input')
     })
+
+    it('throws for missing opening parens', function () {
+      expect(() => parse(`f)`)).to.throw('Unexpected token: )')
+    })
+
+    it('throws for missing closing parens in an operation', function () {
+      expect(() => parse(`f( + 'ups'`)).to.throw('Missing left operand: +')
+    })
+
+    it('throws for a missing method', function () {
+      expect(() => parse(`f()`)).to.throw('Unknown method: f')
+    })
+
+    it('throws when calling Object.prototype toString', function () {
+      expect(() => parse(`toString()`, {}, {})).to.throw('Unknown method: toString')
+    })
+
+    it('throws when calling Object.prototype hasOwnProperty', function () {
+      expect(() => parse(`hasOwnProperty("foo")`, {}, {foo: true}))
+        .to.throw('Unknown method: hasOwnProperty')
+    })
+
+    it('throws when calling Object.prototype toString in a pipe', function () {
+      expect(() => parse(`"foo" | toString`, {}, {})).to.throw('Unknown method: toString')
+    })
   })
 })
