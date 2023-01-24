@@ -1,8 +1,12 @@
 {
   "name": "value-expression",
   "version": "0.0.1",
-  "description": "Evaluate javaScript-like code snippets to produce a single value.",
+  "description": "Safely evaluate javaScript-like code snippets to produce a single value.",
   "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/livingdocsIO/value-expression.git"
+  },
   "scripts": {
     "test": "mocha '{,!(node_modules)/**}/*.test.js' --config 'test/.mocharc.yml'",
     "test:watch": "npm run test -- --watch",
