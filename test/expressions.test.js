@@ -396,5 +396,13 @@ describe('expressions:', function () {
     it(`throws for two operands separated by whitespace`, function () {
       expect(() => parse(`1 + *`)).to.throw('Unexpected right operand: *')
     })
+
+    it(`throws for an invalid expression terminator`, function () {
+      expect(() => parse(`1 + 1 }}`)).to.throw('Unexpected token: }}')
+    })
+
+    it(`throws for two types without an operator in between`, function () {
+      expect(() => parse(`1 2`)).to.throw('Unexpected token: 2')
+    })
   })
 })

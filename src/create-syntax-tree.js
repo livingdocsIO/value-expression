@@ -74,6 +74,7 @@ module.exports = function createSyntaxTree (tokens, type = 'expression') {
 }
 
 function getRootContext (type) {
+  // istanbul ignore else
   if (type === 'expression') {
     return {
       type: 'expression',
@@ -85,6 +86,7 @@ function getRootContext (type) {
       parts: []
     }
   } else {
+    // Should never happen. Here for easier development.
     throw new Error(`Unexpected type: ${type}`)
   }
 }
@@ -94,6 +96,7 @@ function getRootContext (type) {
 // Iteratively build the syntax tree by parsing the tokens
 // left to right.
 function parseNextToken (state) {
+  // istanbul ignore else
   if (state.currentContext.type === 'expression') {
     parseExpression(state)
   } else if (state.currentContext.type === 'concat') {
@@ -107,6 +110,9 @@ function parseNextToken (state) {
     } else {
       parseExpression(state)
     }
+  } else {
+    // Should never happen. Here for easier development.
+    throw new Error(`Unexpected current context: ${state.currentContext.type}`)
   }
 }
 
@@ -118,12 +124,14 @@ function parseExpression (state) {
 
   const context = state.currentContext
   function setStatement (statement) {
+    // istanbul ignore else
     if (context.type === 'expression') {
       if (context.statement) state.syntaxError(`Unexpected token: ${token}`)
       context.statement = statement
     } else if (context.type === 'function') {
       context.args.push(statement)
     } else {
+      // Should never happen. Here for easier development.
       throw new Error(`Unexpected context type: ${context.type}`)
     }
   }
@@ -161,7 +169,7 @@ function parseExpression (state) {
     parseNextToken(state)
   } else if (isExpressionEnd(token)) {
     state.unsetContext()
-    if (!(state.currentContext?.type === 'concat')) state.syntaxError() // todo: test
+    if (!(state.currentContext?.type === 'concat')) state.syntaxError(`Unexpected token: ${token}`)
     parseNextToken(state)
   } else {
     state.syntaxError(`Unexpected token: ${token}`)
@@ -176,6 +184,7 @@ function parseBinaryOperand (state, operatorToken) {
   if (!leftOperand) state.syntaxError(`Missing left operand: ${operatorToken}`)
 
   const type = getOperatorType(operatorToken)
+  // istanbul ignore if
   if (!type) throw state.syntaxError(`Unknown operator: ${operatorToken}`)
 
   let rightOperand

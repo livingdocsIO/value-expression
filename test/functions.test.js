@@ -240,6 +240,22 @@ describe('functions:', function () {
       expect(() => parse(`f()`)).to.throw('Unknown method: f')
     })
 
+    it('throws for an add expression after a pipe', function () {
+      expect(() => parse(`"foo" | foo + "bar"`, {}, {
+        foo: (str) => str
+      })).to.throw('Invalid pipe right hand side: addition')
+    })
+
+    it('throws for a string expression after a pipe', function () {
+      expect(() => parse(`"foo" | "bar"`, {}, {
+        foo: (str) => str
+      })).to.throw('Invalid pipe right hand side: string')
+    })
+
+    it('throws when using a variable after a pipe', function () {
+      expect(() => parse(`"foo" | foo`, {foo: 'bar'}, {})).to.throw('Unknown method: foo')
+    })
+
     it('throws when calling Object.prototype toString', function () {
       expect(() => parse(`toString()`, {}, {})).to.throw('Unknown method: toString')
     })

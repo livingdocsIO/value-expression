@@ -31,9 +31,9 @@ function nodeEvaluator (context, methods) {
     if (node.type === 'strictEqual') return strictEqual(node, getValue)
     if (node.type === 'strictNotEqual') return strictNotEqual(node, getValue)
     if (node.type === 'and') return and(node, getValue)
+    // istanbul ignore else
     if (node.type === 'or') return or(node, getValue)
-
-    throw new Error(`Unknown syntax tree node: ${node.type}`)
+    else throw new Error(`Unknown syntax tree node: ${node.type}`)
   }
 }
 
@@ -49,8 +49,6 @@ function expression (node, getValue) {
 // Get the value from context by the accessor path in node.value
 // return undefined if the value is not found
 function variable (node, context) {
-  if (!node.name) return
-
   const parts = node.name.split('.')
   let value = context
   for (const propertyName of parts) {
