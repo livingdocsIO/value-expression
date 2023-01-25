@@ -30,6 +30,12 @@ describe('functions:', function () {
       }, 3)
     })
 
+    it('pipes throughh multiple methods (throws)', function () {
+      assert(`0${'|inc'.repeat(20000)}`, {}, {
+        inc: (num) => num + 1
+      }, 20000)
+    })
+
     it('pipes through multiple methods with params', function () {
       assert(`0 | inc | inc | decorate(noun)`, {
         noun: 'houses'
